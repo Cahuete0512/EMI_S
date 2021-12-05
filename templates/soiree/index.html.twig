@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des frais de soirée{% endblock %}
+
+{% block body %}
+    <h1>Vos soirées</h1>
+    <table class="table">
+        <tr>
+            <th>Date</th>
+            <th>Nom</th>
+            <th>Lieu</th>
+        </tr>
+        {% for s in soirees %}
+            <tr>
+                <td>{{ s.date | date("m/d/Y") }}</td>
+                <td>{{ s.nom }}</td>
+                <td>{{ s.lieu }}</td>
+            </tr>
+        {% endfor %}
+    </table><br>
+    <a href="{{ path("ajouter") }}" class = "btn btn-success">
+        Ajouter une soirée
+    </a>
+{% endblock %}
