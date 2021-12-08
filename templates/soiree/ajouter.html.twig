@@ -1,9 +1,35 @@
 {% extends 'base.html.twig' %}
 
+
+{% block javascripts %}
+    <script src="{{ asset('js/ajouterSoiree.js') }}"></script>
+{% endblock %}
+
 {% block title %}Ajouter une soirée{% endblock %}
 
 {% block body %}
     <h1>Ajouter une soirée</h1>
-    {{ form(formulaire) }}
+
+    {{ form_start(formulaire) }}
+
+    {{ form_errors(formulaire.nom) }}
+    {{ form_widget(formulaire.nom) }}
+
+    {{ form_errors(formulaire.lieu) }}
+    {{ form_widget(formulaire.lieu) }}
+
+    {{ form_errors(formulaire.date) }}
+    {{ form_widget(formulaire.date) }}
+
+    {{ form_errors(formulaire.montant_total) }}
+    {{ form_widget(formulaire.montant_total) }}
+
+    <ul class="participants" data-prototype="{{ form_widget(formulaire.participants.vars.prototype)|e('html_attr') }}">
+    </ul>
+
+    {{ form_rest (formulaire) }}
+    {{ form_end(formulaire) }}
+
 
 {% endblock %}
+

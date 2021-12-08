@@ -39,7 +39,7 @@ class Soiree
     private $date;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Participant", inversedBy="soirees")
+     * @ORM\ManyToMany(targetEntity="Participant", inversedBy="soirees", cascade={"all"})
      * @ORM\JoinTable(name="participants_soirees")
      */
     private $participants;
