@@ -2,9 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Participant;
 use App\Entity\Remboursement;
 use App\Entity\Soiree;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
 class CalculRemboursementsService {
@@ -49,6 +49,7 @@ class CalculRemboursementsService {
 
         $this->logger->info("################### FIN ###################");
         $this->afficher($participants);
+
     }
 
     public function rembourser($participants, $montantDivise){
@@ -129,19 +130,30 @@ class CalculRemboursementsService {
         return $participants;
     }
 
-    /**
-     * @param mixed $montantARembourser
-     * @param mixed $debiteur
-     * @param mixed $crediteur
-     */
-    public function creerRemboursement(mixed $montantARembourser, mixed $debiteur, mixed $crediteur): void
+
+    public function creerRemboursement(float $montantARembourser, Participant $debiteur, Participant $crediteur): void
     {
-        $remboursement = new Remboursement();
-        $remboursement->setMontant($montantARembourser);
+        $remboursementExistant = null;
+        if(!empty($debiteur->getRemboursementsEffectues())) {
+            foreach ($debiteur->getRemboursementsEffectues() as $remboursement) {
+                if ($remboursement->getCrediteur()->getId() == $crediteur->getId()) {
+                    $remboursementExistant = $remboursement;
+                }
+            }
+        }
 
-        $debiteur->addRemboursementEffectue($remboursement);
-        $crediteur->addRemboursementRecu($remboursement);
+        if($remboursementExistant == null) {
+            $remboursement = new Remboursement();
+            $remboursement->setMontant($montantARembourser);
+            $remboursement->setCrediteur($crediteur);
+            $remboursement->setDebiteur($debiteur);
 
-        $this->logger->info("id " . $debiteur->getId() . " rembourse " . $montantARembourser . " à id " . $crediteur->getId());
+            $debiteur->addRemboursementEffectue($remboursement);
+            $crediteur->addRemboursementRecu($remboursement);
+
+            $this->logger->info("id " . $debiteur->getId() . " rembourse " . $montantARembourser . " à id " . $crediteur->getId());
+        }else{
+            $remboursementExistant->setMontant($remboursementExistant->getMontant() + $montantARembourser);
+        }
     }
 }

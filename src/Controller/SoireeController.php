@@ -128,7 +128,7 @@ class SoireeController extends AbstractController
 
         $calculRemboursementsService->calcul($soiree);
 
-        return $this->render('soiree/acceder.html.twig', [
+        return $this->render('soiree/remboursement.html.twig', [
             'soiree'=>$soiree
         ]);
     }
