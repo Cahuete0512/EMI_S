@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un participant{% endblock %}
+
+{% block body %}
+    <h1>Modifier un participant</h1>
+
+    {{ form_start(formulaire) }}
+
+    {{ form_errors(formulaire.nom) }}
+    {{ form_label(formulaire.nom, "Nom") }}
+    {{ form_widget(formulaire.nom) }}
+
+    {{ form_errors(formulaire.prenom) }}
+    {{ form_label(formulaire.prenom, "Prénom") }}
+    {{ form_widget(formulaire.prenom) }}
+
+    {{ form_errors(formulaire.montantPaye) }}
+    {{ form_label(formulaire.montantPaye, "Montant payé") }}
+    {{ form_widget(formulaire.montantPaye) }}
+
+    {{ form_rest (formulaire) }}
+    {{ form_end(formulaire) }}
+
+
+{% endblock %}
+

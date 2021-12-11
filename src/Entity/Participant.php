@@ -29,63 +29,56 @@ class Participant
     private $prenom;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Soiree", mappedBy="participants")
+     * @ORM\ManyToOne(targetEntity="Soiree", inversedBy="participants")
      */
-    private $soirees;
+    private $soiree;
 
     /**
-     * @ORM\OneToMany(targetEntity="Reglement", mappedBy="participant")
+     * @ORM\Column(type="float")
      */
-    private $reglements;
+    private $montantPaye;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Remboursement", mappedBy="crediteur")
-     */
     private $remboursementsEffectues;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Remboursement", mappedBy="debiteur")
-     */
     private $remboursementsRecus;
 
     public function __construct()
     {
-        $this->soirees = new ArrayCollection();
-        $this->reglements = new ArrayCollection();
-        $this->remboursementsEffectues = new ArrayCollection();
-        $this->remboursementsRecus = new ArrayCollection();
+        $this->soiree = new ArrayCollection();
+        $this->remboursementsEffectues = [];
+        $this->remboursementsRecus = array();
     }
 
     /**
-     * @return ArrayCollection
+     * @return float
      */
-    public function getReglements(): ArrayCollection
+    public function getMontantPaye()
     {
-        return $this->reglements;
+        return $this->montantPaye;
     }
 
     /**
-     * @param ArrayCollection $reglements
+     * @param float $montantPaye
      */
-    public function setReglements(ArrayCollection $reglements): void
+    public function setMontantPaye($montantPaye): void
     {
-        $this->reglements = $reglements;
+        $this->montantPaye = $montantPaye;
     }
 
     /**
      * @return mixed
      */
-    public function getSoirees()
+    public function getSoiree()
     {
-        return $this->soirees;
+        return $this->soiree;
     }
 
     /**
-     * @param mixed $soirees
+     * @param mixed $soiree
      */
-    public function setSoirees($soirees): void
+    public function setSoiree($soiree): void
     {
-        $this->soirees = $soirees;
+        $this->soiree = $soiree;
     }
 
     /**
@@ -126,5 +119,50 @@ class Participant
     public function setPrenom($prenom): void
     {
         $this->prenom = $prenom;
+    }
+
+    public function getRemboursementsEffectues()
+    {
+        return $this->remboursementsEffectues;
+    }
+
+    public function addRemboursementEffectue($remboursement){
+        if(empty($this->remboursementsEffectues)){
+            $this->remboursementsEffectues = [$remboursement];
+        }else {
+            array_push($this->remboursementsEffectues, $remboursement);
+        }
+    }
+
+    public function addRemboursementRecu($remboursement){
+        if(empty($this->remboursementsRecus)){
+            $this->remboursementsRecus = [$remboursement];
+        }else {
+            array_push($this->remboursementsRecus, $remboursement);
+        }
+    }
+
+    public function getRemboursementsRecus()
+    {
+        return $this->remboursementsRecus;
+    }
+
+    public function getMontantRecalcule()
+    {
+        $sommeRemboursementsEffectues = 0;
+        if(!empty($this->remboursementsEffectues)) {
+            foreach ($this->remboursementsEffectues as $re) {
+                $sommeRemboursementsEffectues += $re->getMontant();
+            }
+        }
+
+        $sommeRemboursementsRecus = 0;
+        if(!empty($this->remboursementsRecus)) {
+            foreach ($this->remboursementsRecus as $rr) {
+                $sommeRemboursementsRecus += $rr->getMontant();
+            }
+        }
+
+        return $this->montantPaye + $sommeRemboursementsEffectues - $sommeRemboursementsRecus;
     }
 }

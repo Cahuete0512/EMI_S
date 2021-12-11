@@ -21,10 +21,6 @@ class SoireeType extends AbstractType
             ->add('lieu')
             ->add('date', DateType::class)
             ->add('montant_total')
-            ->add('participants', CollectionType::class,[
-                'entry_type' => ParticipantType::class,
-                'entry_options' => ['label' => false],
-                'allow_add' => true,])
             ->add("ok", SubmitType::class, ["label"=>"OK"])
         ;
     }

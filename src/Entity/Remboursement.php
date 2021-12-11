@@ -2,36 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\RemboursementRepository;
-use Doctrine\ORM\Mapping as ORM;
-
-/**
- * @ORM\Entity(repositoryClass=RemboursementRepository::class)
- */
 class Remboursement
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+
     private $id;
 
-    /**
-     * @ORM\Column(type="float")
-     */
     private $montant;
 
-    /**
-     * One Customer has One Cart.
-     * @ORM\ManyToOne (targetEntity="Participant", inversedBy="remboursementsEffectues")
-     */
+
     private $crediteur;
 
-    /**
-     * One Customer has One Cart.
-     * @ORM\ManyToOne (targetEntity="Participant", inversedBy="remboursementsRecus")
-     */
+
     private $debiteur;
 
     public function getId(): ?int

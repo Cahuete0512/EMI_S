@@ -24,11 +24,6 @@ class Soiree
     private $nom;
 
     /**
-     * @ORM\Column (type="integer")
-     */
-    private $montantTotal;
-
-    /**
      * @ORM\Column(type="string", length=50)
      */
     private $lieu;
@@ -39,15 +34,9 @@ class Soiree
     private $date;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Participant", inversedBy="soirees", cascade={"all"})
-     * @ORM\JoinTable(name="participants_soirees")
+     * @ORM\OneToMany(targetEntity="Participant", mappedBy="soiree", cascade={"all"})
      */
     private $participants;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Reglement", mappedBy="soiree")
-     */
-    private $reglements;
 
     public function __construct()
     {
@@ -84,15 +73,13 @@ class Soiree
      */
     public function getMontantTotal()
     {
-        return $this->montantTotal;
-    }
+        $montant = 0;
 
-    /**
-     * @param mixed $montantTotal
-     */
-    public function setMontantTotal($montantTotal): void
-    {
-        $this->montantTotal = $montantTotal;
+        foreach ($this->participants as $participant){
+            $montant += $participant->getMontantPaye();
+        }
+
+        return $montant;
     }
 
     /**

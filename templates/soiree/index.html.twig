@@ -15,6 +15,15 @@
                 <td>{{ s.date | date("m/d/Y") }}</td>
                 <td>{{ s.nom }}</td>
                 <td>{{ s.lieu }}</td>
+                <td><a href="{{ path("modifier",{'id':s.id}) }}" class = "btn btn-success">
+                    Modifier
+                </a></td>
+                <td><a href="{{ path("supprimer",{'id':s.id}) }}" class = "btn btn-danger">
+                    Supprimer
+                </a></td>
+                <td><a href="{{ path("acceder_soiree",{'id':s.id}) }}" class = "btn btn-success">
+                    Accéder
+                </a></td>
             </tr>
         {% endfor %}
     </table><br>

@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accéder à la soirée{% endblock %}
+
+{% block body %}
+    <h1>Super soirée {{ soiree.nom }} le {{ soiree.date | date("m/d/Y") }}</h1>
+
+    <h2>Lieu</h2>
+    <p> {{ soiree.lieu }}</p>
+
+    <h2>Participants</h2>
+    <p><table class="table">
+        <tr>
+            <th>nom</th>
+            <th>prénom</th>
+            <th>montant</th>
+            <th>actions</th>
+        </tr>
+        {% for p in soiree.participants %}
+            <tr>
+                <td>{{ p.nom }}</td>
+                <td>{{ p.prenom }}</td>
+                <td>{{ p.montantPaye }} €</td>
+                <td>
+                    <a href="{{ path("modifier_participant",{'idSoiree':soiree.id, 'idParticipant':p.id}) }}" class = "btn btn-success">
+                        modifier
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ path("ajouter_participant",{'id':soiree.id}) }}" class = "btn btn-success">
+        Ajouter
+    </a>
+
+    <a href="{{ path("home")}}" class = "btn btn-success">
+        Retour
+    </a>
+
+    <a href="{{ path("calculer_soiree",{'id':soiree.id})}}" class = "btn btn-success">
+        Calculer
+    </a>
+    </p>
+{% endblock %}
+

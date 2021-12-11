@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Soiree;
 use App\Form\SoireeType;
+use App\Service\CalculRemboursementsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,11 +27,11 @@ class SoireeController extends AbstractController
     }
 
     #[Route('ajouter', name:'ajouter')]
-    public function soiree_ajouter(Request $request){
+    public function ajouter(Request $request){
         //crééer une soirée vide
         $soiree = new Soiree();
 
-        //Crééer le formulaire pour cette catégorie
+        //Crééer le formulaire pour cette soirée
         $form = $this->createForm(SoireeType::class, $soiree);
 
         $form->handleRequest($request);
@@ -53,23 +54,23 @@ class SoireeController extends AbstractController
         ]);
     }
 
-    #[Route('categorie/modifier/{id}', name:'categorie_modifier')]
-    public function categorie_modifier($id,Request $request){
+    #[Route('soiree/modifier/{id}', name:'modifier')]
+    public function modifier($id,Request $request){
 
-        //Aller chercher la catégorie
-        $repo = $this->getDoctrine()->getRepository(SoireeType::class);
-        $categorie=$repo->find($id);
+        //Aller chercher la soirée
+        $repo = $this->getDoctrine()->getRepository(Soiree::class);
+        $soiree=$repo->find($id);
 
-        //Crééer le formulaire pour cette catégorie
-        $form = $this->createForm(SoireeType::class, $categorie);
+        //Créer le formulaire pour cette soirée
+        $form = $this->createForm(SoireeType::class, $soiree);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             //On récupère l'entity manager
             $em = $this->getDoctrine()->getManager();
 
-            //Je dis à l'entity manager que je veux enregistrer ma catégorie
-            $em->persist($categorie);
+            //Je dis à l'entity manager que je veux enregistrer ma soirée modifiée
+            $em->persist($soiree);
 
             //je déclenche la requête
             $em->flush();
@@ -78,8 +79,57 @@ class SoireeController extends AbstractController
             return $this->redirectToRoute("home");
         }
 
-        return $this->render("categorie/modifier.html.twig", [
+        return $this->render("soiree/modifier.html.twig", [
             "formulaire"=> $form->createView()
+        ]);
+    }
+
+    #[Route('soiree/supprimer/{id}', name:'supprimer')]
+    public function supprimer($id){
+
+        //Aller chercher la soirée
+        $repo = $this->getDoctrine()->getRepository(Soiree::class);
+        $soiree=$repo->find($id);
+
+        //On récupère l'entity manager
+        $em = $this->getDoctrine()->getManager();
+
+        //Je dis à l'entity manager que je veux supprimer ma soirée
+        $em->remove($soiree);
+
+        //je déclenche la requête
+        $em->flush();
+
+        //je retourne à l'accueil
+        return $this->redirectToRoute("home");
+    }
+
+    #[Route('soiree/acceder/{id}', name:'acceder_soiree')]
+    public function acceder($id){
+
+        //Aller chercher la soirée
+        $repo = $this->getDoctrine()->getRepository(Soiree::class);
+        $soiree=$repo->find($id);
+
+        //On récupère l'entity manager
+        $em = $this->getDoctrine()->getManager();
+
+        return $this->render('soiree/acceder.html.twig', [
+            'soiree'=>$soiree
+        ]);
+    }
+
+
+    #[Route('soiree/calculer/{id}', name:'calculer_soiree')]
+    public function calculer($id, CalculRemboursementsService $calculRemboursementsService){
+        //Aller chercher la soirée
+        $repo = $this->getDoctrine()->getRepository(Soiree::class);
+        $soiree=$repo->find($id);
+
+        $calculRemboursementsService->calcul($soiree);
+
+        return $this->render('soiree/acceder.html.twig', [
+            'soiree'=>$soiree
         ]);
     }
 }
