@@ -3,31 +3,38 @@
 {% block title %}Gestion des frais de soirée{% endblock %}
 
 {% block body %}
-    <h1>Vos soirées</h1>
-    <table class="table">
-        <tr>
-            <th>Date</th>
-            <th>Nom</th>
-            <th>Lieu</th>
-        </tr>
-        {% for s in soirees %}
+    <div class="container">
+        <h1><span class="badge bg-secondary">Vos soirées</span></h1>
+    <div class="table-responsive">
+        <p><table class="table table-bordered table-striped">
+            <thead>
             <tr>
-                <td>{{ s.date | date("m/d/Y") }}</td>
-                <td>{{ s.nom }}</td>
-                <td>{{ s.lieu }}</td>
-                <td><a href="{{ path("modifier",{'id':s.id}) }}" class = "btn btn-success">
-                    Modifier
-                </a></td>
-                <td><a href="{{ path("supprimer",{'id':s.id}) }}" class = "btn btn-danger">
-                    Supprimer
-                </a></td>
-                <td><a href="{{ path("acceder_soiree",{'id':s.id}) }}" class = "btn btn-success">
-                    Accéder
-                </a></td>
+                <th scope="col">Date</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Lieu</th>
+                <th scope="col" colspan="3">Actions</th>
             </tr>
-        {% endfor %}
-    </table><br>
-    <a href="{{ path("ajouter") }}" class = "btn btn-success">
+            </thead>
+            {% for s in soirees %}
+                <tr>
+                    <td>{{ s.date | date("m/d/Y") }}</td>
+                    <td>{{ s.nom }}</td>
+                    <td>{{ s.lieu }}</td>
+                    <td><a href="{{ path("modifier",{'id':s.id}) }}" class = "btn btn-outline-success">
+                            Modifier
+                        </a></td>
+                    <td><a href="{{ path("supprimer",{'id':s.id}) }}" class = "btn btn-outline-danger">
+                            Supprimer
+                        </a></td>
+                    <td><a href="{{ path("acceder_soiree",{'id':s.id}) }}" class = "btn btn-outline-info">
+                            Accéder
+                        </a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    </div>
+    <a href="{{ path("ajouter") }}" class = "btn btn-outline-success">
         Ajouter une soirée
     </a>
 {% endblock %}

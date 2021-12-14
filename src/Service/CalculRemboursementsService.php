@@ -11,11 +11,17 @@ class CalculRemboursementsService {
 
     protected $logger;
 
+    /**
+     * @param LoggerInterface $logger "pour afficher les logs"
+     */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
+    /**
+     * @param Soiree $soiree
+     */
     public function calcul(Soiree $soiree){
         $this->logger->info("lancement du calcul");
 
@@ -52,6 +58,10 @@ class CalculRemboursementsService {
 
     }
 
+    /**
+     * @param $participants "l'ensemble des participants"
+     * @param $montantDivise
+     */
     public function rembourser($participants, $montantDivise){
         // retirer de la liste les participants ayant payé le montant exacte
         foreach ($participants as $key => $participant) {
@@ -92,7 +102,12 @@ class CalculRemboursementsService {
         $this->rembourser($participants, $montantDivise);
     }
 
-
+    /**
+     * @param $montantDivise
+     * @param $crediteur "la personne qui avance les frais"
+     * @param $debiteur "la personne qui rembourse le crediteur"
+     * @return mixed
+     */
     public function getMontantMaxARembourser($montantDivise, $crediteur, $debiteur){
         $this->logger->info("créditeur : " .$crediteur->getId());
         $this->logger->info("débiteur : " . $debiteur->getId());
@@ -104,13 +119,6 @@ class CalculRemboursementsService {
             return $montantMaxADebiter;
         }else{
             return $montantMaxACrediter;
-        }
-    }
-
-    // TODO: supprimer
-    public function afficher($participants){
-        foreach ($participants as $key => $participant) {
-            $this->logger->info("id participant : " . $participant->getId() . " montant restant payé : " . $participant->getMontantRecalcule());
         }
     }
 
@@ -130,7 +138,11 @@ class CalculRemboursementsService {
         return $participants;
     }
 
-
+    /**
+     * @param float $montantARembourser
+     * @param Participant $debiteur "la personne qui rembourse le crediteur"
+     * @param Participant $crediteur "la personne qui rembourse le crediteur"
+     */
     public function creerRemboursement(float $montantARembourser, Participant $debiteur, Participant $crediteur): void
     {
         $remboursementExistant = null;

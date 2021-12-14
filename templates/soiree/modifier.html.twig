@@ -3,7 +3,7 @@
 {% block title %}Modifier une soirée{% endblock %}
 
 {% block body %}
-    <h1>Modifier une soirée</h1>
+    <h1><span class="badge bg-secondary">Modifier une soirée</span></h1>
     {{ form_start(formulaire) }}
 
     {{ form_errors(formulaire.nom) }}
@@ -14,9 +14,6 @@
 
     {{ form_errors(formulaire.date) }}
     {{ form_widget(formulaire.date) }}
-
-    {{ form_errors(formulaire.montant_total) }}
-    {{ form_widget(formulaire.montant_total) }}
 
     {{ form_rest (formulaire) }}
     {{ form_end(formulaire) }}
