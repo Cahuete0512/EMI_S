@@ -43,19 +43,10 @@ class CalculRemboursementsService {
         // trier la liste par montant recalculé
         $participants = $this->trierParticipantParMontantRecalcule($participants);
 
-
-        $this->logger->info("################### APRES CALCUL ###################");
-        $this->afficher($participants);
-
         // pour chaque centime en plus du 1er sur le modulo, faire un remboursement de 1 centime aux suivants dans la liste
         for($i = 1; $i<=$modulo*100-1; $i++){
             $this->creerRemboursement(0.01, $participants[$i], $participants[0]);
         }
-
-
-        $this->logger->info("################### FIN ###################");
-        $this->afficher($participants);
-
     }
 
     /**
@@ -81,10 +72,8 @@ class CalculRemboursementsService {
 
         // trier la liste par montant payé
         $this->logger->info("Avant");
-        $this->afficher($participants);
         $participants = $this->trierParticipantParMontantRecalcule($participants);
         $this->logger->info("Apres");
-        $this->afficher($participants);
 
         // celui qui a payé le moins rembourse à celui qui a payé le plus (dans les limites)
         // calcul du montant

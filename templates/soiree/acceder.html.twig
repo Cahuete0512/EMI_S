@@ -4,23 +4,23 @@
 
 {% block body %}
     <div class="container">
-        <nav class="navbar navbar-expand-lg flex-column flex-md-row navbar-light" style="background: linear-gradient(to right, #0ed2f7, #563d7c);">
+        <nav class="navbar navbar-expand-lg flex-column flex-md-row navbar-light" style="background: #f0dff8;">
             <form class="form-inline">
-                <a href="{{ path("ajouter_participant",{'id':soiree.id}) }}" class = "btn btn-lg btn-primary" style="background: linear-gradient(to right,#563d7c, #0ed2f7);">
+                <a href="{{ path("ajouter_participant",{'id':soiree.id}) }}" class = "btn btn-lg btn-primary" style="background: linear-gradient(to right,#d8b0ed, #c9a0dc);">
                     Ajouter
                 </a>
-                <a href="{{ path("home")}}" class= "btn btn-lg btn-primary"style="background: linear-gradient(to right,#563d7c, #0ed2f7);">
+                <a href="{{ path("home")}}" class= "btn btn-lg btn-primary" style="background: linear-gradient(to right,#d8b0ed, #c9a0dc);">
                     Retour
                 </a>
-                <a href="{{ path("calculer_soiree",{'id':soiree.id})}}" class = "btn btn-lg btn-primary" style="background: linear-gradient(to right,#563d7c, #0ed2f7);">
+                <a href="{{ path("calculer_soiree",{'id':soiree.id})}}" class = "btn btn-lg btn-primary" style="background: linear-gradient(to right,#d8b0ed, #c9a0dc);">
                     Calculer
                 </a>
             </form>
         </nav>
     </div>
-        <h1>Super soirée {{ soiree.nom }} le {{ soiree.date | date("m/d/Y") }} à : {{ soiree.lieu }}</h1>
+        <p><h1 class = "text-center"> soirée {{ soiree.nom }} le {{ soiree.date | date("m/d/Y") }} à : {{ soiree.lieu }}</h1>
         <div class="table-responsive">
-            <p><table class="table table-bordered table-striped" style="background: linear-gradient(to right, #0ed2f7, #563d7c);">
+            <p><table class="table table-bordered table-striped" style="background: #f0dff8;">
                 <thead>
                 <tr>
                     <th scope="col">Nom</th>
@@ -35,7 +35,7 @@
                         <td>{{ p.prenom }}</td>
                         <td>{{ p.montantPaye }} €</td>
                         <td>
-                            <a href="{{ path("modifier_participant",{'idSoiree':soiree.id, 'idParticipant':p.id}) }}" class = "btn btn-lg btn-primary" style="background: linear-gradient(to right,#563d7c, #0ed2f7);">
+                            <a href="{{ path("modifier_participant",{'idSoiree':soiree.id, 'idParticipant':p.id}) }}" class = "btn btn-lg btn-primary" style="background: linear-gradient(to right,#563d7c, #c9a0dc);">
                                 modifier
                             </a>
                         </td>
@@ -43,6 +43,5 @@
                 {% endfor %}
             </table>
         </div>
-    </div>
 {% endblock %}
 

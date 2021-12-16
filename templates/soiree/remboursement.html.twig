@@ -3,30 +3,33 @@
 {% block title %}Gestion des frais de soirée{% endblock %}
 
 {% block body %}
-    <h1><span class="badge bg-secondary">Vos remboursements</span></h1>
-    <table class="table">
-        <tr>
-            <th>Nom</th>
-            <th>payé</th>
-            <th>Remboursements</th>
-        </tr>
-        {% for p in soiree.participants %}
-            {% if p.remboursementsEffectues is not empty %}
-                <tr>
-                    <td>{{ p.nom }} {{ p.prenom }}</td>
-                    <td>{{ p.montantPaye }} €</td>
-                    <td>
-                        <table>
-                            {% for r in p.remboursementsEffectues %}
-                            <tr>
-                                <td>{{ r.montant }} €</td>
-                                <td>{{ r.crediteur.nom }} {{ r.crediteur.prenom }}</td>
-                            </tr>
-                            {% endfor %}
-                        </table>
-                    </td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-    </table>
+    <p><h1 class = "text-center">Vos remboursements</h1>
+    <div class="table-responsive">
+        <p><table class="table table-bordered table-striped" style="background: #f0dff8;">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>payé</th>
+                <th>Remboursements</th>
+            </tr>
+            </thead>
+            {% for p in soiree.participants %}
+                {% if p.remboursementsEffectues is not empty %}
+                    <tr>
+                        <td>{{ p.nom }} {{ p.prenom }}</td>
+                        <td>{{ p.montantPaye }} €</td>
+                        <td>
+                            <table>
+                                {% for r in p.remboursementsEffectues %}
+                                    <tr>
+                                        <td>{{ r.crediteur.nom }} {{ r.crediteur.prenom }} doit : {{ r.montant }} € A : {{ p.nom }} {{ p.prenom }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}

@@ -4,9 +4,9 @@
 
 {% block body %}
     <div class="container">
-        <h1><span class="badge bg-secondary">Vos soirées</span></h1>
+        <p><h1 class = "text-center"> Vos soirées</h1></p>
     <div class="table-responsive">
-        <p><table class="table table-bordered table-striped">
+        <p><table class="table table-bordered table-striped" style="background: #f0dff8;"></p>
             <thead>
             <tr>
                 <th scope="col">Date</th>
@@ -20,13 +20,13 @@
                     <td>{{ s.date | date("m/d/Y") }}</td>
                     <td>{{ s.nom }}</td>
                     <td>{{ s.lieu }}</td>
-                    <td><a href="{{ path("modifier",{'id':s.id}) }}" class = "btn btn-outline-success">
+                    <td><a href="{{ path("modifier",{'id':s.id}) }}" class = "btn btn-lg btn-primary" style="background: linear-gradient(to right,#d8b0ed, #c9a0dc);">
                             Modifier
                         </a></td>
-                    <td><a href="{{ path("supprimer",{'id':s.id}) }}" class = "btn btn-outline-danger">
+                    <td><a href="{{ path("supprimer",{'id':s.id}) }}" class = "btn btn-lg btn-primary" style="background: linear-gradient(to right,#d8b0ed, #c9a0dc);">
                             Supprimer
                         </a></td>
-                    <td><a href="{{ path("acceder_soiree",{'id':s.id}) }}" class = "btn btn-outline-info">
+                    <td><a href="{{ path("acceder_soiree",{'id':s.id}) }}" class = "btn btn-lg btn-primary" style="background: linear-gradient(to right,#d8b0ed, #c9a0dc);">
                             Accéder
                         </a></td>
                 </tr>
@@ -34,7 +34,7 @@
         </table>
     </div>
     </div>
-    <a href="{{ path("ajouter") }}" class = "btn btn-outline-success">
+    <a href="{{ path("ajouter") }}" class = "btn btn-lg btn-primary" style="background: linear-gradient(to right,#d8b0ed, #c9a0dc);">
         Ajouter une soirée
     </a>
 {% endblock %}
