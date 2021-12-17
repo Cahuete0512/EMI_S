@@ -3,7 +3,7 @@
 {% block title %}Gestion des frais de soirée{% endblock %}
 
 {% block body %}
-    <p><h1 class = "text-center">Vos remboursements</h1>
+    <p><h1 class = "text-center">Remboursements à effectuer</h1>
     <div class="table-responsive">
         <p><table class="table table-bordered table-striped" style="background: #f0dff8;">
             <thead>
@@ -22,7 +22,8 @@
                             <table>
                                 {% for r in p.remboursementsEffectues %}
                                     <tr>
-                                        <td>{{ r.crediteur.nom }} {{ r.crediteur.prenom }} doit : {{ r.montant }} € A : {{ p.nom }} {{ p.prenom }}</td>
+                                        <td> {{ p.nom }} {{ p.prenom }} doit : {{ r.montant }} € <br>
+                                            A : {{ r.crediteur.nom }} {{ r.crediteur.prenom }} </td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -32,4 +33,13 @@
             {% endfor %}
         </table>
     </div>
+    <blockquote class="blockquote text-center">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-{{ label }}">
+                    <h1 class="display-5"><mark>{{ message }}</mark></h1>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </blockquote>
 {% endblock %}

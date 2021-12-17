@@ -5,13 +5,26 @@ namespace App\Controller;
 use App\Entity\Soiree;
 use App\Form\SoireeType;
 use App\Service\CalculRemboursementsService;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use \Exception;
 
 class SoireeController extends AbstractController
 {
+
+    protected $logger;
+
+    /**
+     * @param LoggerInterface $logger "pour afficher les logs"
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     #[Route('/', name: 'home')]
     public function index(): Response
     {
@@ -28,7 +41,7 @@ class SoireeController extends AbstractController
 
     #[Route('ajouter', name:'ajouter')]
     public function ajouter(Request $request){
-        //crééer une soirée vide
+        //créer une soirée vide
         $soiree = new Soiree();
 
         //Crééer le formulaire pour cette soirée
@@ -126,7 +139,13 @@ class SoireeController extends AbstractController
         $repo = $this->getDoctrine()->getRepository(Soiree::class);
         $soiree=$repo->find($id);
 
-        $calculRemboursementsService->calcul($soiree);
+        try{
+            $calculRemboursementsService->calcul($soiree);
+
+        }catch(Exception $e){
+            $this->logger->info($e);
+            $this->addFlash("warning", '$e->getMessage()');
+        }
 
         return $this->render('soiree/remboursement.html.twig', [
             'soiree'=>$soiree

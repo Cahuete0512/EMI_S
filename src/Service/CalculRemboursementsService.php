@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Participant;
 use App\Entity\Remboursement;
 use App\Entity\Soiree;
+use Exception;
 use Psr\Log\LoggerInterface;
 
 class CalculRemboursementsService {
@@ -21,22 +22,25 @@ class CalculRemboursementsService {
 
     /**
      * @param Soiree $soiree
+     * @throws Exception si le nb de participants est inférieur à 2
      */
     public function calcul(Soiree $soiree){
-        $this->logger->info("lancement du calcul");
+        $participants = $soiree->getParticipants()->getValues();
+
+        if (count($participants)<2){
+            $this->logger->warning("Participants inférieurs à deux. Le calcul n'est pas possible !");
+            throw new Exception("Participants inférieurs à deux. Le calcul n'est pas possible !");
+        }
 
         // mettre le modulo de côté (divisé par cent pour avoir un "modulo" en centimes)
         $modulo = ($soiree->getMontantTotal() * 100 % $soiree->getParticipants()->count()) / 100;
-        $this->logger->info("modulo : " . $modulo);
 
         // on récupère le montant qui sera divisble par le nom de participants
         $montantSansModulo = $soiree->getMontantTotal() - $modulo;
 
         // calculer montant à payer pour chacun (sans modulo)
         $montantDivise = $montantSansModulo / $soiree->getParticipants()->count();
-        $this->logger->info("montant à payer pour chacun : " . $montantDivise);
 
-        $participants = $soiree->getParticipants()->getValues();
         // calculer les remboursements
         $this->rembourser($participants, $montantDivise);
 
@@ -57,35 +61,26 @@ class CalculRemboursementsService {
         // retirer de la liste les participants ayant payé le montant exacte
         foreach ($participants as $key => $participant) {
             if ($participant->getMontantRecalcule() == $montantDivise) {
-
-                $this->logger->info("Supression participant " . $participant->getId());
                 unset($participants[$key]);
             }
         }
-        $this->logger->info("nombre de participants " . count($participants));
 
         // si la liste est vide, on sort de la méthode
-        if(count($participants) == 1){
-            $this->logger->info("Sortie du calcul");
+        if(count($participants) <= 1){
             return;
         }
 
         // trier la liste par montant payé
-        $this->logger->info("Avant");
         $participants = $this->trierParticipantParMontantRecalcule($participants);
-        $this->logger->info("Apres");
 
         // celui qui a payé le moins rembourse à celui qui a payé le plus (dans les limites)
         // calcul du montant
         $debiteur = end($participants);
         $crediteur = $participants[0];
         $montantARembourser = $this->getMontantMaxARembourser($montantDivise, $crediteur, $debiteur);
-        $this->logger->info("montant à rembourser : " . $montantARembourser);
 
         // création du remboursement
         $this->creerRemboursement($montantARembourser, $debiteur, $crediteur);
-
-        $this->logger->info("nb remboursement effectues debiteur : " . count($debiteur->getRemboursementsEffectues()));
 
         // on rappelle la méthode
         $this->rembourser($participants, $montantDivise);
@@ -98,9 +93,6 @@ class CalculRemboursementsService {
      * @return mixed
      */
     public function getMontantMaxARembourser($montantDivise, $crediteur, $debiteur){
-        $this->logger->info("créditeur : " .$crediteur->getId());
-        $this->logger->info("débiteur : " . $debiteur->getId());
-
         $montantMaxACrediter = $crediteur->getMontantRecalcule() - $montantDivise;
         $montantMaxADebiter = $montantDivise - $debiteur->getMontantRecalcule();
 
@@ -129,8 +121,8 @@ class CalculRemboursementsService {
 
     /**
      * @param float $montantARembourser
-     * @param Participant $debiteur "la personne qui rembourse le crediteur"
-     * @param Participant $crediteur "la personne qui rembourse le crediteur"
+     * @param Participant $debiteur la personne qui rembourse le crediteur
+     * @param Participant $crediteur la personne qui rembourse le crediteur
      */
     public function creerRemboursement(float $montantARembourser, Participant $debiteur, Participant $crediteur): void
     {
@@ -151,8 +143,6 @@ class CalculRemboursementsService {
 
             $debiteur->addRemboursementEffectue($remboursement);
             $crediteur->addRemboursementRecu($remboursement);
-
-            $this->logger->info("id " . $debiteur->getId() . " rembourse " . $montantARembourser . " à id " . $crediteur->getId());
         }else{
             $remboursementExistant->setMontant($remboursementExistant->getMontant() + $montantARembourser);
         }
